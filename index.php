@@ -28,7 +28,7 @@ if($method == "OPTIONS") {
  
 chdir('files');
 
-if (($method == "COPY" or $method == "MOVE" or $method == "GET") and isset($_GET['fileFrom'])) {
+if (($method == "COPY" or $method == "MOVE" or $method == "GET" or $method == "DELETE") and isset($_GET['fileFrom'])) {
     $url_fileFrom = $_GET['fileFrom'];
     logMe(["url_fileFrom" => $url_fileFrom]);
 } 
