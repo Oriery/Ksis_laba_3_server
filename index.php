@@ -74,7 +74,7 @@ switch ($method) {
     
         foreach ($files as $file)
             if (!is_dir($file))
-                echo $file . "\n";
+                echo "\"" . $file . "\" ";
         break;
 
     case 'GET':
@@ -145,9 +145,9 @@ switch ($method) {
             header('HTTP/1.1 500 Move Error');
         else
             if (!unlink($url_fileFrom))
-            header('HTTP/1.1 500 Cannot Delete old File');
-        else
-            header('HTTP/1.1 200 Successfully Moved');
+                header('HTTP/1.1 500 Cannot Delete old File');
+            else
+                header('HTTP/1.1 200 Successfully Moved');
 
         break;
 
