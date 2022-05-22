@@ -46,7 +46,7 @@ if (($method == "PUT" or $method == "POST") and !isset($url_fileTo)) {
     header('HTTP/1.1 400 Must Give fileTo');
     exit;
 }
-if ($method == "GET" and !isset($url_fileFrom)) {
+if (($method == "GET" or $method == "DELETE") and !isset($url_fileFrom)) {
     header('HTTP/1.1 400 Must Give fileFrom');
     exit;
 }
@@ -70,6 +70,8 @@ if (isset($url_fileTo) and !file_exists($url_fileTo)) {
 
 switch ($method) {
     case "FILES":
+        header("HTTP/1.1 200 List Given");
+
         $files = glob_recursive("*");
     
         foreach ($files as $file)
@@ -145,7 +147,7 @@ switch ($method) {
             header('HTTP/1.1 500 Move Error');
         else
             if (!unlink($url_fileFrom))
-                header('HTTP/1.1 500 Cannot Delete old File');
+                header('HTTP/1.1 500 Cannot Delete Old File');
             else
                 header('HTTP/1.1 200 Successfully Moved');
 
