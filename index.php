@@ -54,7 +54,13 @@ if (($method == "GET" or $method == "DELETE") and !isset($url_fileFrom)) {
     exit;
 }
 
-// TODO Проверка папки (нельзя .. и абсолютный путь)
+// Проверка папки (нельзя .. и абсолютный путь)
+if ((isset($url_fileFrom) and (preg_match("{\.\.|:}", $url_fileFrom))) or
+    (isset($url_fileTo) and (preg_match("{\.\.|:}", $url_fileTo)))) {
+    header('HTTP/1.1 403 Access to path denied');
+    exit;
+}
+
 // TODO снйчас можно get сами папки
 
 // Проверка наличия файла fileFrom
