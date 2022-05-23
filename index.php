@@ -17,7 +17,10 @@ header("Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS,FILES,COPY,MOV
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 $method = $_SERVER['REQUEST_METHOD'];
-$input = file_get_contents('php://input');
+
+$fp = fopen("php://input", 'r+');
+$input = stream_get_contents($fp);
+fclose($fp);
 
 logMe(["method" => $method, "input" => strlen($input) > 100 ? "### Файл больше 100 байт ###" : $input]);
 
@@ -83,21 +86,17 @@ switch ($method) {
     case 'GET':
         $myfile = fopen($url_fileFrom, "r");
 
-        if (isset($_SERVER['HTTP_CURRENT'])) {
-            fseek($myfile, BUFFER * (intval($_SERVER['HTTP_CURRENT'] - 1)));
-            echo fread($myfile, BUFFER);
-            fseek($myfile, 0);
-        } else {
-            header('Blocks: ' . ceil(filesize($url_fileFrom) / BUFFER));
-            echo fread($myfile, BUFFER);
-            fseek($myfile, 0);
+        while ($output = fread($myfile, BUFFER)) {
+            echo $output;
         }
+        fseek($myfile, 0);
 
         fclose($myfile);
         break;
 
     case 'PUT':
         $result = file_put_contents($url_fileTo, $input, LOCK_EX);
+
         if ($result === FALSE) {
             header('HTTP/1.1 500 Rewriting Error');
         }
@@ -110,6 +109,7 @@ switch ($method) {
 
     case 'POST':
         $result = file_put_contents($url_fileTo, $input, FILE_APPEND | LOCK_EX);
+
         if ($result === FALSE)
             header('HTTP/1.1 500 Post Error');
         else
