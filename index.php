@@ -29,11 +29,11 @@ if($method == "OPTIONS") {
 chdir('files');
 
 if (($method == "COPY" or $method == "MOVE" or $method == "GET" or $method == "DELETE") and isset($_GET['fileFrom'])) {
-    $url_fileFrom = str_replace("\\", "/", $_GET['fileFrom']);
+    $url_fileFrom = trim(str_replace("\\", "/", $_GET['fileFrom']));
     logMe(["url_fileFrom" => $url_fileFrom]);
 } 
 if (($method == "PUT" or $method == "POST" or $method == "COPY" or $method == "MOVE") and isset($_GET['fileTo'])) {
-    $url_fileTo = str_replace("\\", "/", $_GET['fileTo']);
+    $url_fileTo = trim(str_replace("\\", "/", $_GET['fileTo']));
     logMe(["url_fileTo" => $url_fileTo]);
 }
 
