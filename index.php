@@ -29,15 +29,15 @@ if($method == "OPTIONS") {
 chdir('files');
 
 if (($method == "COPY" or $method == "MOVE" or $method == "GET" or $method == "DELETE") and isset($_GET['fileFrom'])) {
-    $url_fileFrom = $_GET['fileFrom'];
+    $url_fileFrom = str_replace("\\", "/", $_GET['fileFrom']);
     logMe(["url_fileFrom" => $url_fileFrom]);
 } 
 if (($method == "PUT" or $method == "POST" or $method == "COPY" or $method == "MOVE") and isset($_GET['fileTo'])) {
-    $url_fileTo = $_GET['fileTo'];
+    $url_fileTo = str_replace("\\", "/", $_GET['fileTo']);
     logMe(["url_fileTo" => $url_fileTo]);
 }
 
-// Проверка количества файлов
+// Проверка получения путей к файлам
 if (($method == "COPY" or $method == "MOVE") and !isset($url_fileFrom) and !isset($url_fileTo)) {
     header('HTTP/1.1 400 Must Give fileFrom and fileTo');
     exit;
@@ -51,7 +51,8 @@ if (($method == "GET" or $method == "DELETE") and !isset($url_fileFrom)) {
     exit;
 }
 
-// TODO Проверка папки
+// TODO Проверка папки (нельзя .. и абсолютный путь)
+// TODO снйчас можно get сами папки
 
 // Проверка наличия файла fileFrom
 if (isset($url_fileFrom) and !file_exists($url_fileFrom)) {
