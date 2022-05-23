@@ -55,13 +55,11 @@ if (($method == "GET" or $method == "DELETE") and !isset($url_fileFrom)) {
 }
 
 // Проверка папки (нельзя .. и абсолютный путь)
-if ((isset($url_fileFrom) and (preg_match("{\.\.|:}", $url_fileFrom))) or
-    (isset($url_fileTo) and (preg_match("{\.\.|:}", $url_fileTo)))) {
+if ((isset($url_fileFrom) and preg_match("{\.\.|:}", $url_fileFrom)) or
+    (isset($url_fileTo) and preg_match("{\.\.|:}", $url_fileTo))) {
     header('HTTP/1.1 403 Access to path denied');
     exit;
 }
-
-// TODO снйчас можно get сами папки
 
 // Проверка наличия файла fileFrom
 if (isset($url_fileFrom) and !file_exists($url_fileFrom)) {
@@ -76,6 +74,13 @@ if (isset($url_fileTo) and !file_exists($url_fileTo)) {
     if (!is_dir($paths['dirname'])) {
         mkdir($paths['dirname'], 0777, true);
     }
+}
+
+// Нельзя просить папки. Можно только файлы
+if ((isset($url_fileFrom) and is_dir($url_fileFrom)) or
+    (isset($url_fileTo) and is_dir($url_fileTo))) {
+    header('HTTP/1.1 400 Path to folder given');
+    exit;
 }
 
 switch ($method) {
